@@ -1,0 +1,39 @@
+# SORT TERMS
+sort terms.txt | uniq >| terms2.txt
+cat terms2.txt >| terms.txt
+
+# SORT ADS
+sort ads.txt | uniq >| ads2.txt
+cat ads2.txt >| ads.txt
+
+# SORT DATES
+sort pdates.txt | uniq >| pdates2.txt
+cat pdates2.txt >| pdates.txt
+
+# SORT PRICES BY NUMERICAL ORDER
+sort prices.txt -n  | uniq >| prices2.txt
+cat prices2.txt >| prices.txt
+
+# REMOVING EXTRA FILES
+rm -f terms2.txt 
+rm -f ads2.txt
+rm -f pdates2.txt
+rm -f prices2.txt 
+
+#REMOVE ALL BACKSLASHES AND FORMAT FOR BERKERLY
+python killslash.py ads.txt ads2.txt
+python killslash.py terms.txt terms2.txt
+python killslash.py pdates.txt pdates2.txt
+python killslash.py prices.txt prices2.txt
+
+# DBLOAD THE READY TEXT FILES INTO DATABASES
+db_load -T -f ads2.txt -t hash -c dupsort=1 ad.idx
+db_load -T -f terms2.txt -t btree -c dupsort=1 te.idx
+db_load -T -f pdates2.txt -t btree -c dupsort=1 da.idx
+db_load -T -f prices2.txt -t btree  -c dupsort=1 pr.idx
+
+# REMOVING EXTRA FILES
+rm -f terms2.txt 
+rm -f ads2.txt
+rm -f pdates2.txt
+rm -f prices2.txt 
